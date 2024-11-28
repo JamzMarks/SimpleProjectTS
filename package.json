@@ -1,0 +1,26 @@
+{
+  "name": "simpleprojectts",
+  "version": "1.0.0",
+  "description": "Simple Project for TypeScript Class, Udemy Course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "lite-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamzMarks/SimpleProjectTS.git"
+  },
+  "author": "JamzMarks",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JamzMarks/SimpleProjectTS/issues"
+  },
+  "homepage": "https://github.com/JamzMarks/SimpleProjectTS#readme",
+  "devDependencies": {
+    "eslint": "^9.15.0",
+    "lite-server": "^2.6.1",
+    "ts-node": "^10.9.2"
+  }
+}
