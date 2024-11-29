@@ -1,13 +1,25 @@
-interface ProjectInterface{
-    id: string,
-    title: string,
-    description: string,
-    peopleOf: number
-} 
+enum ProjectStatus{
+    ACTIVE = 'active',
+    FINISHED = 'finished'
+}
+
+class Project{
+    constructor(
+        public id: string, 
+        public title: string, 
+        public description: string, 
+        public people: number,
+        public status: ProjectStatus
+    ){
+
+    }
+}
+
+type Listeners = (items: Project[]) => void;
 
 class ProjectState{
-    private listeners: any[] = [];
-    private projects: ProjectInterface[] = [];
+    private listeners: Listeners[] = [];
+    private projects: Project[] = [];
     private static instance: ProjectState;
 
     private constructor(){
@@ -21,17 +33,18 @@ class ProjectState{
             return this.instance
         }
     }
-    addListener(listenerFn: Function){
+    addListener(listenerFn: Listeners){
         this.listeners.push(listenerFn)
     }
 
     addProject(title: string, description: string, numOfPeople: number){
-        const newProject = {
-            id: Math.random().toString(),
-            title: title,
-            description: description,
-            peopleOf: numOfPeople
-        }
+        const newProject = new Project(
+            Math.random().toString(),
+            title,
+            description,
+            numOfPeople,
+            ProjectStatus.ACTIVE
+        )
         this.projects.push(newProject);
         for(const listenerFn of this.listeners){
             listenerFn(this.projects.slice())
@@ -104,9 +117,9 @@ class ProjectList{
     templateElement: HTMLTemplateElement;
     rootElement: HTMLDivElement;
     element: HTMLElement;
-    assignedProjects: any[];
+    assignedProjects: Project[];
 
-    constructor(private type: 'active' | 'finished'){
+    constructor(private type: ProjectStatus){
         this.templateElement = document.querySelector("#project-list")! as HTMLTemplateElement;
         this.rootElement = document.getElementById("app")! as HTMLDivElement;
         this.assignedProjects = [];
@@ -118,8 +131,15 @@ class ProjectList{
         this.element = importedNode.firstElementChild as HTMLElement;
         this.element.id = `${type}-projects`;
 
-        projectState.addListener((projects: any) => {
-            this.assignedProjects = projects;
+        projectState.addListener((projects: Project[]) => {
+            const relevantProjects = projects.filter(prj => {
+                if(this.type === ProjectStatus.ACTIVE){
+                    return prj.status === ProjectStatus.ACTIVE
+                }else{
+                    return prj.status === ProjectStatus.FINISHED
+                }
+            });
+            this.assignedProjects = relevantProjects;
             this.renderProjects();
         });
         
@@ -130,6 +150,7 @@ class ProjectList{
     private renderProjects(){
         console.log(this)
         const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement
+        listEl.innerHTML = '';
         for(const prjItem of this.assignedProjects){
             const listItem = document.createElement('li');
             listItem.textContent = prjItem.title;
@@ -237,5 +258,5 @@ class ProjectInput{
 }
 
 const project = new ProjectInput();
-const activeList = new ProjectList('active');
-const finishedList = new ProjectList('finished');
+const activeList = new ProjectList(ProjectStatus.ACTIVE);
+const finishedList = new ProjectList(ProjectStatus.FINISHED);
