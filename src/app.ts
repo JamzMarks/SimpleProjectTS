@@ -104,10 +104,12 @@ class ProjectList{
     templateElement: HTMLTemplateElement;
     rootElement: HTMLDivElement;
     element: HTMLElement;
+    assignedProjects: any[];
 
     constructor(private type: 'active' | 'finished'){
         this.templateElement = document.querySelector("#project-list")! as HTMLTemplateElement;
         this.rootElement = document.getElementById("app")! as HTMLDivElement;
+        this.assignedProjects = [];
 
         const importedNode = document.importNode(
             this.templateElement.content,
@@ -116,8 +118,23 @@ class ProjectList{
         this.element = importedNode.firstElementChild as HTMLElement;
         this.element.id = `${type}-projects`;
 
+        projectState.addListener((projects: any) => {
+            this.assignedProjects = projects;
+            this.renderProjects();
+        });
+        
         this.attach();
         this.renderContent();
+    }
+
+    private renderProjects(){
+        console.log(this)
+        const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement
+        for(const prjItem of this.assignedProjects){
+            const listItem = document.createElement('li');
+            listItem.textContent = prjItem.title;
+            listEl.appendChild(listItem)
+        }
     }
     private renderContent(){
         const listId = `${this.type}-projects-list`;
@@ -181,10 +198,6 @@ class ProjectInput{
             min: 1,
             max: 30
         }
-        const checked = checkInputValue(titleValidatable);
-        const checked2 = checkInputValue(descriptorValidatable);
-        const checked3 = checkInputValue(peopleValidatable);
-        console.log(checked,checked2, checked3)
         if(
             !checkInputValue(titleValidatable) || 
             !checkInputValue(descriptorValidatable) || 
