@@ -1,4 +1,4 @@
-abstract class Component<T extends HTMLElement, U extends HTMLElement>{
+export abstract class Component<T extends HTMLElement, U extends HTMLElement>{
     templateElement: HTMLTemplateElement;
     rootElement: T;
     element: U;
@@ -26,7 +26,9 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement>{
     private attach(insertAtStart: boolean){
         if(insertAtStart){
             this.rootElement.insertAdjacentElement(
-                insertAtStart ? 'afterbegin' : 'beforeend', this.element);
+                insertAtStart ? 'afterbegin' : 'beforeend', 
+                this.element
+            );
         }    
     }
     abstract configure(): void;
