@@ -1,7 +1,7 @@
-import { Component } from "./base-component.js";
-import { ProjectItem } from "./project-item.js";
-import { projectState } from "../state/project-state.js";
-import { Project, ProjectStatus } from "../models/project.js";
+import { Component } from "./base-component";
+import { ProjectItem } from "./project-item";
+import { projectState } from "../state/project-state";
+import { Project, ProjectStatus } from "../models/project";
 
 export class ProjectList extends Component<HTMLDivElement, HTMLElement>{
     assignedProjects: Project[];
