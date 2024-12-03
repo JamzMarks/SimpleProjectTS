@@ -8,11 +8,18 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement>{
         insertAtStart: boolean,
         newElementId?: string)
         {
-            this.templateElement = document.getElementById(templateId
-            )! as HTMLTemplateElement;
+            const template = document.getElementById(templateId);
+            if (!template) {
+                throw new Error(`Template with ID "${templateId}" not found`);
+            }
+            this.templateElement = template as HTMLTemplateElement;
             
-            this.rootElement = document.getElementById(hostElementId
-            )! as T;
+            const root = document.getElementById(hostElementId);
+            if (!root) {
+                throw new Error(`Host element with ID "${hostElementId}" not found`);
+            }
+            this.rootElement = root as T;
+
             const importedNode = document.importNode(
                 this.templateElement.content,
                 true
@@ -23,13 +30,11 @@ export abstract class Component<T extends HTMLElement, U extends HTMLElement>{
             }
             this.attach(insertAtStart)
     } 
-    private attach(insertAtStart: boolean){
-        if(insertAtStart){
+    private attach(insertAtBeginning: boolean){
             this.rootElement.insertAdjacentElement(
-                insertAtStart ? 'afterbegin' : 'beforeend', 
+                insertAtBeginning ? 'afterbegin' : 'beforeend', 
                 this.element
-            );
-        }    
+            );   
     }
     abstract configure(): void;
     abstract renderContent(): void;

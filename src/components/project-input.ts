@@ -19,7 +19,7 @@ export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement>{
 
     }
     configure(){
-        this.element.addEventListener("submit", this.submitHandler.bind(this));
+        this.element.addEventListener("submit", this.submitHandler);
     }
     renderContent(){
 
@@ -38,7 +38,7 @@ export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement>{
         const descriptorValidatable: Validatable = {
             value: enteredDescriptor,
             required: true,
-            minLenght: 20,
+            minLenght: 1,
             maxLenght: 500
         }
         const peopleValidatable: Validatable = {
@@ -58,6 +58,12 @@ export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement>{
             return [enteredTitle, enteredDescriptor, parseFloat(enteredPeople)]
         }    
     }
+    
+    private clearInputs(){
+        this.titleInputElement.value = "";
+        this.descriptionInputElement.value = "";
+        this.peopleInputElement.value = '';
+    }
 
     @autoBind
     private submitHandler(event: Event){
@@ -65,14 +71,10 @@ export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement>{
         const enteredUserInputs = this.gatherUserInput();
         if(Array.isArray(enteredUserInputs)){
             const [title, description, people] = enteredUserInputs;
+            //O erro ocorre aqui
             projectState.addProject(title, description, people);
             this.clearInputs();
+            
         }
-    }
-
-    private clearInputs(){
-        this.titleInputElement.value = "";
-        this.descriptionInputElement.value = "";
-        this.peopleInputElement.value = '';
     }
 }
